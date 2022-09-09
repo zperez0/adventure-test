@@ -1,15 +1,23 @@
+const { db } = require("../util/admin");
+
 exports.getAllLists = (request, response) => {
-  lists = [
-    {
-      id: "1",
-      title: "greeting",
-      body: "Hello world",
-    },
-    {
-      id: "2",
-      title: "greeting2",
-      body: "Hello world 2.0",
-    },
-  ];
-  return response.json(lists);
+  db.collection("lists")
+    .orderBy("createdAt", "desc")
+    .get()
+    .then((data) => {
+      let lists = [];
+      data.forEach((doc) => {
+        lists.push({
+          listId: doc.id,
+          title: doc.data().title,
+          body: doc.data().body,
+          createdAt: doc.data().createdAt,
+        });
+      });
+      return response.json(lists);
+    })
+    .catch((err) => {
+      console.error(err);
+      return response.status(500).json({ error: err.code });
+    });
 };
