@@ -1,11 +1,10 @@
 import React from 'react';
-import './App.css';
-import ListControl from './ListControl';
+import Header from './Header';
 
 function App() {
   return (
     <React.Fragment>
-      <ListControl />
+      <Header />
     </React.Fragment>
   );
 }
