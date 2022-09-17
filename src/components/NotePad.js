@@ -20,3 +20,8 @@ NotePad.propTypes = {
 }
 
 export default NotePad;
+
+// notes:
+  //  set up fake data
+  // pass props
+  // add propTypes
