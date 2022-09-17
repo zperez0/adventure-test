@@ -1,9 +1,22 @@
-import React from 'react'
+import React from "react";
+import PropTypes from "prop-types";
 
-function NotePad() {
+function NotePad(props) {
+  const list = "Gear";
+
   return (
-    <div>NotePad</div>
-  )
+    <React.Fragment>
+      <ul>
+          <h3>Title: {props.title}</h3>
+          <h3>Body: {props.body}</h3>
+      </ul>
+    </React.Fragment>
+  );
 }
 
-export default NotePad
+NotePad.propTypes = {
+  title: PropTypes.string,
+  body: PropTypes.string
+}
+
+export default NotePad;
