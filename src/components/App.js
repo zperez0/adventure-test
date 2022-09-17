@@ -1,9 +1,12 @@
+import React from 'react';
 import './App.css';
+import ListControl from './ListControl';
 
 function App() {
   return (
-    <div>
-    </div>
+    <React.Fragment>
+      <ListControl />
+    </React.Fragment>
   );
 }
 
