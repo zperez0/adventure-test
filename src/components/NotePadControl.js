@@ -1,116 +1,99 @@
-import React from "react";
+import React, { useState } from "react";
 import NewNotePadForm from "./NewNotePadForm";
 import NotePadDetail from "./NotePadDetail";
 import NotePadList from "./NotePadList";
 import EditNotePadForm from "./EditNotePadForm";
 
-class NotePadControl extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formVisibleOnPage: false,
-      mainNotePadList: [],
-      selectedNote: null,
-      editing: false,
-    };
-  }
+function NotePadControl() {
+  const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
+  const [mainNotePadList, setMainNotePadList] = useState([]);
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [editing, setEditing] = useState(false);
 
-  handleClick = () => {
-    if (this.state.selectedNote != null) {
-      this.setState({
-        formVisibleOnPage: false,
-        selectedNote: null,
-        editing: false,
-      });
+  const handleClick = () => {
+    if (selectedNote != null) {
+      setFormVisibleOnPage(false);
+      setSelectedNote(null);
+      setEditing(false);
     } else {
-      this.setState((prevState) => ({
-        formVisibleOnPage: !prevState.formVisibleOnPage,
-      }));
+      setFormVisibleOnPage(!formVisibleOnPage);
     }
   };
 
-  handleAddingNewNoteToList = (newNote) => {
-    const newMainNotePadList = this.state.mainNotePadList.concat(newNote);
-    this.setState({
-      mainNotePadList: newMainNotePadList,
-      formVisibleOnPage: false,
-    });
+  const handleAddingNewNoteToList = (newNote) => {
+    const newMainNotePadList = mainNotePadList.concat(newNote);
+    setMainNotePadList(newMainNotePadList);
+      setFormVisibleOnPage(false);
   };
 
-  handleChangingSelectedNote = (id) => {
-    const selectedNote = this.state.mainNotePadList.filter(
+  const handleChangingSelectedNote = (id) => {
+    const selection = mainNotePadList.filter(
       (note) => note.id === id
     )[0];
-    this.setState({ selectedNote: selectedNote });
+    setSelectedNote(selection);
   };
 
-  handleDeletingNote = (id) => {
-    const newMainNotePadList = this.state.mainNotePadList.filter(
+  const handleDeletingNote = (id) => {
+    const newMainNotePadList = mainNotePadList.filter(
       (note) => note.id !== id
     );
-    this.setState({
-      mainNotePadList: newMainNotePadList,
-      selectedNote: null,
-    });
+    setMainNotePadList(newMainNotePadList);
+    setSelectedNote(null);
   };
 
-  handleEditClick = () => {
-    console.log("handleEditClick reached!");
-    this.setState({ editing: true });
+  const handleEditClick = () => {
+    setEditing(true);
   };
 
-  handleEditingNoteInList = (noteToEdit) => {
-    const editedMainNoteList = this.state.mainNotePadList
-      .filter(note => note.id !== this.state.selectedNote.id)
+  const handleEditingNoteInList = (noteToEdit) => {
+    const editedMainNoteList = mainNotePadList
+      .filter((note) => note.id !== selectedNote.id)
       .concat(noteToEdit);
-    this.setState({
-      mainNotePadList: editedMainNoteList,
-      editing: false,
-      selectedNote: null,
-    });
+      setMainNotePadList(editedMainNoteList)
+      setSelectedNote(null);
+      setEditing(false);
   };
 
-  render() {
-    let currentlyVisibleState = null;
-    let buttonText = null;
+  let currentlyVisibleState = null;
+  let buttonText = null;
 
-    if (this.state.editing) {
-      currentlyVisibleState = (
-        <EditNotePadForm 
-        note={this.state.selectedNote}
-        onEditNote = {this.handleEditingNoteInList} />
-      );
-      buttonText = "Return Home";
-    } else if (this.state.selectedNote != null) {
-      currentlyVisibleState = (
-        <NotePadDetail
-          note={this.state.selectedNote}
-          onClickingDelete={this.handleDeletingNote}
-          onClickingEdit={this.handleEditClick}
-        />
-      );
-      buttonText = "Return Home";
-    } else if (this.state.formVisibleOnPage) {
-      currentlyVisibleState = (
-        <NewNotePadForm onNewNoteCreation={this.handleAddingNewNoteToList} />
-      );
-      buttonText = "Return Home";
-    } else {
-      currentlyVisibleState = (
-        <NotePadList
-          noteList={this.state.mainNotePadList}
-          onNoteSelection={this.handleChangingSelectedNote}
-        />
-      );
-      buttonText = "Add Note";
-    }
-    return (
-      <>
-        {currentlyVisibleState}
-        <button onClick={this.handleClick}>{buttonText}</button>
-      </>
+  if (editing) {
+    currentlyVisibleState = (
+      <EditNotePadForm
+        note={selectedNote}
+        onEditNote={handleEditingNoteInList}
+      />
     );
+    buttonText = "Return Home";
+  } else if (selectedNote != null) {
+    currentlyVisibleState = (
+      <NotePadDetail
+        note={selectedNote}
+        onClickingDelete={handleDeletingNote}
+        onClickingEdit={handleEditClick}
+      />
+    );
+    buttonText = "Return Home";
+  } else if (formVisibleOnPage) {
+    currentlyVisibleState = (
+      <NewNotePadForm onNewNoteCreation={handleAddingNewNoteToList} />
+    );
+    buttonText = "Return Home";
+  } else {
+    currentlyVisibleState = (
+      <NotePadList
+        noteList={mainNotePadList}
+        onNoteSelection={handleChangingSelectedNote}
+      />
+    );
+    buttonText = "Add Note";
   }
+  return (
+    <>
+      {currentlyVisibleState}
+      <button onClick={handleClick}>{buttonText}</button>
+    </>
+  );
 }
 
 export default NotePadControl;
@@ -151,3 +134,14 @@ export default NotePadControl;
 // create method handleEditingNoteInList -> add prop onEditNote = {this.handleEditingNoteInList}
 
 // WIP: fix editing note -> when I edit a title & leave the body blank it does not carry over the OG body. it becomes blank.
+
+// -----HOOKS VERSION-----
+// turn the class component NotePadControl into a function component
+// turn all state in NotePadControl into state variables -> useState hook
+//  turn the class methods into functions -> add const in front -> const handleClick = () => {
+// remove render
+// import useState hook -> set up formVisibleOnPage state -> const [formVisibleOnPage, setFormVisibleOnPage]...
+// update  all of setFormVisibleOnPage -> handleClick -> handleAddingNewNoteToList -> conditional
+//  9/20/22
+// update mainNotePad state -> selectedNote -> editing
+// remove this -> this.handleClick
