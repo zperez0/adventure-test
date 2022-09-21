@@ -1,7 +1,6 @@
 import React from "react";
 import ReusableForm from "./ReusableForm";
 import PropTypes from "prop-types";
-import { v4 } from 'uuid';
 
 function NewNotePadForm(props) {
 
@@ -10,7 +9,6 @@ function NewNotePadForm(props) {
     props.onNewNoteCreation({
       title: event.target.title.value,
       body: event.target.body.value,
-      id: v4()
     })
   }
   return (
@@ -44,3 +42,6 @@ export default NewNotePadForm;
 
     // 9/19/22
     // remove form -> add ReusableForm -> pass props formSubmissionHandler & buttonText
+
+    // 9/20/22
+    // remove v4 -> firebase will handle the id
